@@ -1,47 +1,48 @@
-import { pgTable, text, timestamp, boolean, jsonb, serial } from 'drizzle-orm/pg-core';
-import { relations } from 'drizzle-orm';
+import { pgTable, text, timestamp, serial, jsonb, boolean } from "drizzle-orm/pg-core";
+import { relations } from "drizzle-orm";
 
-// TABELA DE AGENTES (A Base da Inteligência)
-export const agents = pgTable('agents', {
-  // Identificação Principal
-  id: text('id').primaryKey(), // Ex: 'talia-x-1', 'heimdall-ultimate'
-  name: text('name').notNull(),
-  role: text('role').notNull(),
-
-  // Metadados de Classificação
-  version: text('version').default('X.0'), // X.0, X.1, X.2 (Ultimate)
-  rarity: text('rarity').default('Common'),
-  cluster: text('cluster').default('Geral'),
-
-  // Cérebro e Personalidade
-  systemPrompt: text('system_prompt').notNull(), // A personalidade "System Instruction"
-  knowledgeBase: text('knowledge_base'),         // Conteúdo fundido de Manuais/PDFs (RAG Simples)
-
-  // MOTOR DE INTELIGÊNCIA (Arquitetura X.2)
-  // Define qual "cérebro" esse agente usa:
-  modelProvider: text('model_provider').default('openai'), // 'openai', 'anthropic', 'google', 'image-gen'
-  modelName: text('model_name').default('gpt-4o'),         // 'claude-3-5-sonnet', 'gpt-4o', 'dall-e-3'
-
-  // UI e Conteúdo Bruto
-  content: text('content'), // Backup do markdown original
-  stats: jsonb('stats'),    // JSON flexível para atributos: { knowledge: 100, speed: 99 }
-  active: boolean('active').default(true),
-
-  // Datas de Controle
-  createdAt: timestamp('created_at').defaultNow(),
-  updatedAt: timestamp('updated_at').defaultNow(),
+// --- TABELA DE USUÁRIOS (A que faltava) ---
+export const users = pgTable("users", {
+  id: serial("id").primaryKey(),
+  openId: text("open_id").unique().notNull(), // ID do Google/GitHub
+  email: text("email"),
+  name: text("name"),
+  avatarUrl: text("avatar_url"),
+  platform: text("platform"),
+  role: text("role").default("user"),
+  lastLoginAt: timestamp("last_login_at"),
+  createdAt: timestamp("created_at").defaultNow(),
 });
 
-// TABELA DE MENSAGENS (Histórico Persistente)
-export const messages = pgTable('messages', {
-  id: serial('id').primaryKey(), // ID Auto-incremental (1, 2, 3...)
-  agentId: text('agent_id').references(() => agents.id), // Link com a tabela agents
-  role: text('role').notNull(), // 'user', 'assistant', 'system'
-  content: text('content').notNull(),
-  createdAt: timestamp('created_at').defaultNow(),
+// --- TABELA DE AGENTES ---
+export const agents = pgTable("agents", {
+  id: text("id").primaryKey(),
+  name: text("name").notNull(),
+  role: text("role").notNull(),
+  version: text("version").default("X.0"),
+  rarity: text("rarity").default("Common"),
+  cluster: text("cluster").default("Geral"),
+  systemPrompt: text("system_prompt").notNull(),
+  knowledgeBase: text("knowledge_base"),
+  modelProvider: text("model_provider").default("openai"),
+  modelName: text("model_name").default("gpt-4o"),
+  content: text("content"),
+  stats: jsonb("stats"),
+  active: boolean("active").default(true),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
 });
 
-// RELACIONAMENTOS (Para facilitar queries do Drizzle)
+// --- TABELA DE MENSAGENS ---
+export const messages = pgTable("messages", {
+  id: serial("id").primaryKey(),
+  agentId: text("agent_id").references(() => agents.id),
+  role: text("role").notNull(),
+  content: text("content").notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// --- RELACIONAMENTOS ---
 export const agentsRelations = relations(agents, ({ many }) => ({
   messages: many(messages),
 }));
