@@ -1,18 +1,17 @@
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import { useAlshamAgent } from "../hooks/use-alsham-agent";
 import { Send, Bot, Loader2 } from "lucide-react";
 import { useSoundEngine } from "../hooks/useSoundEngine";
 
-export function TaliaChat() {
-  const {
-    messages,
-    sendMessage,
-    isTyping,
-    currentAgent,
-    inputMessage,
-    setInputMessage
-  } = useAlshamAgent();
+interface TaliaChatProps {
+  messages: Array<{ role: string; content: string }>;
+  onSendMessage: (message: string) => void;
+  isTyping: boolean;
+}
 
+export function TaliaChat({ messages, onSendMessage, isTyping }: TaliaChatProps) {
+  const { currentAgent } = useAlshamAgent();
+  const [inputMessage, setInputMessage] = useState("");
   const { playClick } = useSoundEngine();
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -26,7 +25,8 @@ export function TaliaChat() {
   const handleSend = () => {
     if (!inputMessage.trim()) return;
     playClick();
-    sendMessage(inputMessage);
+    onSendMessage(inputMessage);
+    setInputMessage("");
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -69,8 +69,8 @@ export function TaliaChat() {
           >
             <div
               className={`max-w-[80%] rounded-2xl p-3 px-4 shadow-md text-sm leading-relaxed ${msg.role === "user"
-                  ? "bg-blue-600 text-white rounded-tr-none"
-                  : "bg-gray-800 text-gray-100 rounded-tl-none border border-gray-700"
+                ? "bg-blue-600 text-white rounded-tr-none"
+                : "bg-gray-800 text-gray-100 rounded-tl-none border border-gray-700"
                 }`}
             >
               <div className="font-bold text-[10px] mb-1 opacity-50 uppercase">
