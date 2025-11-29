@@ -1,11 +1,13 @@
-// Adaptador Vercel para o ALSHAM OS
-const app = require('../dist/index.js'); // Aponta para o servidor compilado
+// api/index.js - Adaptador Vercel Serverless
 
-module.exports = (req, res) => {
-  // Passa a requisição para o app compilado
-  if (app && typeof app === 'function') {
-    return app(req, res);
-  }
-  // Fallback se algo der errado
-  res.status(500).json({ error: 'Server initialization failed' });
-};
+// Importa o build gerado pelo esbuild
+// Nota: A Vercel roda isso da raiz, então apontamos para o output
+import app from '../dist/index.js';
+
+export default async function handler(req, res) {
+  // Aguarda o app estar pronto se for uma promise
+  const expressApp = await app;
+  
+  // Passa a bola para o Express
+  expressApp(req, res);
+}
