@@ -57,19 +57,26 @@ const rarityConfig: Record<string, { border: string; glow: string; badge: string
     },
 };
 
+import { useSoundEngine } from "../hooks/useSoundEngine";
+
 export function AgentCard({ agent, onClick }: AgentCardProps) {
     const Icon = iconMap[agent.icon] || Brain;
     const isSupreme = agent.version.includes("X.1") || agent.version.includes("ULTIMATE");
     const rarity = agent.rarity || "Common";
     const rarityStyle = rarityConfig[rarity] || rarityConfig.Common;
     const RarityIcon = rarityStyle.icon;
+    const { playClick, playHover } = useSoundEngine();
 
     return (
         <motion.div
             whileHover={{ scale: 1.05, y: -5 }}
             whileTap={{ scale: 0.95 }}
-            onClick={onClick}
-            className="relative group cursor-pointer"
+            onClick={() => {
+                playClick();
+                onClick();
+            }}
+            onMouseEnter={playHover}
+            className="relative group cursor-pointer h-full min-h-[280px]"
         >
             {/* Glow Effect */}
             <div
@@ -111,8 +118,8 @@ export function AgentCard({ agent, onClick }: AgentCardProps) {
                 </div>
 
                 {/* Text Content */}
-                <h3 className="text-lg font-bold text-white mb-1 line-clamp-1">{agent.name}</h3>
-                <p className="text-xs text-white/60 uppercase tracking-wider mb-2">{agent.role}</p>
+                <h3 className="text-lg font-bold text-white mb-1 line-clamp-2">{agent.name}</h3>
+                <p className="text-xs text-white/60 uppercase tracking-wider mb-2 line-clamp-2">{agent.role}</p>
 
                 <div className="mt-auto flex items-center gap-2">
                     <span className="px-2 py-0.5 rounded-full bg-white/5 border border-white/5 text-[10px] text-white/40">

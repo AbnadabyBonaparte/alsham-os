@@ -1,17 +1,19 @@
-import { useState, useRef, useEffect } from "react"; // ✅ A CORREÇÃO: Importamos o React aqui
-import { useAlshamAgent } from "../hooks/use-alsham-agent"; // Certifique-se que o caminho está certo
-import { Send, Bot, User, Loader2 } from "lucide-react";
+import { useRef, useEffect } from "react";
+import { useAlshamAgent } from "../hooks/use-alsham-agent";
+import { Send, Bot, Loader2 } from "lucide-react";
+import { useSoundEngine } from "../hooks/useSoundEngine";
 
 export function TaliaChat() {
-  const { 
-    messages, 
-    sendMessage, 
-    isTyping, 
-    currentAgent, 
-    inputMessage, 
-    setInputMessage 
+  const {
+    messages,
+    sendMessage,
+    isTyping,
+    currentAgent,
+    inputMessage,
+    setInputMessage
   } = useAlshamAgent();
-  
+
+  const { playClick } = useSoundEngine();
   const scrollRef = useRef<HTMLDivElement>(null);
 
   // Auto-scroll para a última mensagem
@@ -23,6 +25,7 @@ export function TaliaChat() {
 
   const handleSend = () => {
     if (!inputMessage.trim()) return;
+    playClick();
     sendMessage(inputMessage);
   };
 
@@ -35,7 +38,7 @@ export function TaliaChat() {
 
   return (
     <div className="flex flex-col h-[600px] w-full max-w-2xl mx-auto bg-gray-950 border border-gray-800 rounded-xl shadow-2xl overflow-hidden">
-      
+
       {/* Cabeçalho do Agente */}
       <div className="flex items-center p-4 border-b border-gray-800 bg-gray-900/50 backdrop-blur">
         <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-purple-500 to-blue-500 flex items-center justify-center shadow-lg">
@@ -65,11 +68,10 @@ export function TaliaChat() {
             className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
           >
             <div
-              className={`max-w-[80%] rounded-2xl p-3 px-4 shadow-md text-sm leading-relaxed ${
-                msg.role === "user"
+              className={`max-w-[80%] rounded-2xl p-3 px-4 shadow-md text-sm leading-relaxed ${msg.role === "user"
                   ? "bg-blue-600 text-white rounded-tr-none"
                   : "bg-gray-800 text-gray-100 rounded-tl-none border border-gray-700"
-              }`}
+                }`}
             >
               <div className="font-bold text-[10px] mb-1 opacity-50 uppercase">
                 {msg.role === "user" ? "Comandante" : currentAgent?.name}

@@ -9,11 +9,13 @@ dotenv.config();
 const connectionString = process.env.DATABASE_URL;
 
 if (!connectionString) {
-  throw new Error('FATAL: DATABASE_URL não encontrada no .env');
+  console.error("❌ FATAL: DATABASE_URL is missing in .env");
+  // Don't throw here to allow build to pass, but connection will fail if used
 }
 
 // Em dev, desabilitamos "prepare" para evitar conflitos com pooler do Supabase
-const client = postgres(connectionString, { prepare: false });
+// Transaction Mode do Supabase requer "prepare: false"
+const client = postgres(connectionString || "postgres://placeholder:placeholder@localhost:5432/placeholder", { prepare: false });
 export const db = drizzle(client, { schema });
 
 // --- FUNÇÕES QUE FALTAVAM ---

@@ -21,6 +21,8 @@ interface AgentCommandPaletteProps {
     onSelectAgent: (agentId: string) => void;
 }
 
+import { useSoundEngine } from "../hooks/useSoundEngine";
+
 export function AgentCommandPalette({
     open,
     onOpenChange,
@@ -28,6 +30,7 @@ export function AgentCommandPalette({
 }: AgentCommandPaletteProps) {
     const [agents, setAgents] = React.useState<Agent[]>([]);
     const [loading, setLoading] = React.useState(false);
+    const { playClick, playHover } = useSoundEngine();
 
     React.useEffect(() => {
         if (open) {
@@ -100,6 +103,7 @@ export function AgentCommandPalette({
                                 <Command.Group heading="Agentes Supremos (X.1)">
                                     {agents.filter(a => a.version === 'X.1').map((agent) => (
                                         <AgentItem key={agent.id} agent={agent} onSelect={() => {
+                                            playClick();
                                             onSelectAgent(agent.id);
                                             onOpenChange(false);
                                         }} />
@@ -109,6 +113,7 @@ export function AgentCommandPalette({
                                 <Command.Group heading="Especialistas (X.0)">
                                     {agents.filter(a => a.version !== 'X.1').map((agent) => (
                                         <AgentItem key={agent.id} agent={agent} onSelect={() => {
+                                            playClick();
                                             onSelectAgent(agent.id);
                                             onOpenChange(false);
                                         }} />

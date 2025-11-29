@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 
-type Theme = "light" | "dark";
+type Theme = "light" | "dark" | "quantum" | "military" | "cyberpunk" | "aurora" | "sunset" | "ocean" | "matrix" | "dracula" | "synthwave" | string;
 
 interface ThemeContextType {
   theme: Theme;
@@ -31,10 +31,13 @@ export function ThemeProvider({
 
   useEffect(() => {
     const root = document.documentElement;
-    if (theme === "dark") {
+    // Remove old classes if any
+    root.classList.remove("light", "dark");
+    // Set data-theme attribute for CSS variables
+    root.setAttribute("data-theme", theme);
+    // Also add class for Tailwind dark mode compatibility if needed
+    if (theme === "dark" || theme === "quantum" || theme === "cyberpunk" || theme === "military" || theme === "matrix" || theme === "dracula" || theme === "synthwave") {
       root.classList.add("dark");
-    } else {
-      root.classList.remove("dark");
     }
 
     if (switchable) {
@@ -44,8 +47,8 @@ export function ThemeProvider({
 
   const toggleTheme = switchable
     ? () => {
-        setTheme(prev => (prev === "light" ? "dark" : "light"));
-      }
+      setTheme(prev => (prev === "light" ? "dark" : "light"));
+    }
     : undefined;
 
   return (
