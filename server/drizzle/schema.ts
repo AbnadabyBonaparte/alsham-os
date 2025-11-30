@@ -28,6 +28,7 @@ export const agents = pgTable("agents", {
   modelName: text("model_name").default("gpt-4o"),
   content: text("content"),
   stats: jsonb("stats"),
+  config: jsonb("config"),
   active: boolean("active").default(true),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),

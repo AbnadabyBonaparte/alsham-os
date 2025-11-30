@@ -1,0 +1,7 @@
+{
+    "autonomy_level": "advanced",
+    "auto_actions": {
+        "can_search_web": true,
+        "can_generate_files": true
+    }
+}

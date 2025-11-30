@@ -1,0 +1,20 @@
+{
+    "basic_info": {
+        "name": "FABRICATOR X.2",
+        "rarity": "Mythic",
+        "level": 1,
+        "xp": 0
+    },
+    "stats": {
+        "knowledge": 98,
+        "speed": 95,
+        "precision": 90,
+        "creativity": 99,
+        "autonomy": 85,
+        "collaboration": 80
+    },
+    "synergies": [
+        "MONETIX SUPREMO X.0",
+        "STRATEGOS SUPREMO X.0"
+    ]
+}
